@@ -19,9 +19,9 @@ sealed class Result<Error, Value> {
         }
     }
 
-    fun <T> andThen(transform: (Value) -> Result<Error, T>): Result<Error, T> {
+    fun <T> andThen(chain: (Value) -> Result<Error, T>): Result<Error, T> {
         return when (this) {
-            is Success -> transform(data)
+            is Success -> chain(data)
             is Failure -> Failure(error)
         }
     }

@@ -94,7 +94,7 @@ class ResultTest: StringSpec({
         checkAll { value: Int ->
             val result: Result<Unit, Int> = Success(value)
 
-            val actual = result.andThen { Failure<Unit, Int>(Unit)}
+            val actual = result.andThen { Failure<Unit, Int>(Unit) }
 
             actual shouldBe Failure(Unit)
         }
