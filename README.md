@@ -22,6 +22,10 @@ The Kotlin standard library provides a [`kotlin.Result`][kotlin:docs:Result]. It
 library but misses the mark for our use-cases. In particular, `kotlin.Result` failures are restricted to be `Throwable`.
 *Result* library on the other hand does not restrict failures in any way.
 
+Furthermore, `kotlin.Result` provides methods to inspect the actual kind of result. These invites developers to
+constantly check if a result is a success or a failure, negating any benefits of wrapping the computation. *Result*
+instead provides a rich interface to work with results without the need to know which kind of result it is.
+
 ## Design
 The crux of the _Result_ library is the [sealed class][kotlin:docs:sealed-class] `Result<Error, Value>`. It has two
 subclasses `Success` and `Failure`.
@@ -50,4 +54,5 @@ This project uses [Gradle][gradle] as a build tool. To see which tasks are avail
 [kotlin:docs:data-class]: https://kotlinlang.org/docs/reference/data-classes.html
 [kotlin:docs:when]: https://kotlinlang.org/docs/reference/control-flow.html#when-expression
 [Result:docs:API]: https://github.com/Alliander/Result/wiki/API
-[gradle]: https://gradle.org/ 
+[gradle]: https://gradle.org/
+[wikipedia:law-of-demeter]: 
