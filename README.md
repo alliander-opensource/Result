@@ -55,4 +55,3 @@ This project uses [Gradle][gradle] as a build tool. To see which tasks are avail
 [kotlin:docs:when]: https://kotlinlang.org/docs/reference/control-flow.html#when-expression
 [Result:docs:API]: https://github.com/Alliander/Result/wiki/API
 [gradle]: https://gradle.org/
-[wikipedia:law-of-demeter]: 
