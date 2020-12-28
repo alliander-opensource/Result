@@ -53,5 +53,5 @@ This project uses [Gradle][gradle] as a build tool. To see which tasks are avail
 [kotlin:docs:sealed-class]: https://kotlinlang.org/docs/reference/sealed-classes.html
 [kotlin:docs:data-class]: https://kotlinlang.org/docs/reference/data-classes.html
 [kotlin:docs:when]: https://kotlinlang.org/docs/reference/control-flow.html#when-expression
-[Result:docs:API]: https://github.com/Alliander/Result/wiki/API
+[Result:docs:API]: https://github.com/alliander-opensource/Result/wiki/API
 [gradle]: https://gradle.org/
