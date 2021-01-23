@@ -37,7 +37,8 @@ Although the sealed `Result` class allows one to [safely switch][kotlin:docs:whe
 avoided. Instead, one should use the various methods on `Result` to transform data into a desired shape.
 
 ## Documentation
-The API of `Result` is documented on [our wiki][Result:docs:API].
+The API of `Result` is documented on [our wiki][Result:docs:API]. The KDocs can be found on the
+[website][Result:docs:KDoc].
 
 ## Development
 This project uses [Gradle][gradle] as a build tool. To see which tasks are available run
@@ -54,4 +55,5 @@ This project uses [Gradle][gradle] as a build tool. To see which tasks are avail
 [kotlin:docs:data-class]: https://kotlinlang.org/docs/reference/data-classes.html
 [kotlin:docs:when]: https://kotlinlang.org/docs/reference/control-flow.html#when-expression
 [Result:docs:API]: https://github.com/alliander-opensource/Result/wiki/API
+[Result:docs:KDoc]: https://alliander-opensource.github.io/Result/kdoc/result/index.html
 [gradle]: https://gradle.org/
