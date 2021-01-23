@@ -9,3 +9,10 @@
 
 rootProject.name = "Result"
 include("result")
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        jcenter()
+    }
+}
