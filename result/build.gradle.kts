@@ -70,3 +70,10 @@ publishing {
         }
     }
 }
+
+task<Copy>("copyDocs") {
+    from("build/dokka/") {
+        include("**/*")
+    }
+    destinationDir = File("../docs/kdoc")
+}
