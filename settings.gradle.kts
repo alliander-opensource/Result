@@ -8,7 +8,7 @@
  */
 
 rootProject.name = "Result"
-include("result")
+include("result", "random-example")
 
 pluginManagement {
     repositories {
