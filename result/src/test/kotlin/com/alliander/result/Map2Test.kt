@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
 
-class Map2Test: StringSpec({
+class Map2Test : StringSpec({
     "map2(success, success) is a success" {
         checkAll { l: Int, r: Int ->
             val left: Result<String, Int> = Success(l)

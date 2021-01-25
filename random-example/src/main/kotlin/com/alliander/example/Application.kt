@@ -12,7 +12,7 @@ fun main(args: Array<String>) {
     val first = source.integer()
     val second = source.integer()
 
-    val sum = map2(first, second) {l,r -> l+r}
+    val sum = map2(first, second) { l, r -> l + r }
 
     println("$first + $second = $sum")
 }

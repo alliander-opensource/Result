@@ -2,9 +2,9 @@
 A [Kotlin][kotlin] library that is explicit about success and failure.
 
 ## Rationale
-Kotlin is explicit about which value can be `null`. This [null-safety][kotlin:docs:null-safety] is achieved via 
-nullable types and non-nullable types. The distinction is made for type `T` with a question mark: `T?` means that values
-can be `null`, `T` does not allow `null`.
+Kotlin is explicit about which values can be `null`. This [null-safety][kotlin:docs:null-safety] is achieved via 
+nullable and non-nullable types. The distinction is made for type `T` with a question mark: `T?` means that values
+can be `null`, `T` does not allow `null` values.
 
 Some developers use nullable types to signify that a computation could fail. A returned `null` signals that a
 computation has failed. Even though Kotlin has [special syntax][kotlin:docs:safe-calls] to work with nullable types,

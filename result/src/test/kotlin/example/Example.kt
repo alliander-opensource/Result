@@ -4,6 +4,8 @@ import com.alliander.result.*
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.*
+import io.kotest.property.checkAll
+import io.kotest.property.exhaustive.exhaustive
 import io.kotest.property.forAll
 import java.time.LocalDateTime
 import java.util.concurrent.ThreadLocalRandom
@@ -21,24 +23,29 @@ enum class Problem {
     Overflow
 }
 
-data class ProblemOccurredException(val problem: Problem): RuntimeException()
+data class ProblemOccurredException(val problem: Problem) : RuntimeException()
 
 data class TimestampedProblem(val problem: Problem, val timestamp: LocalDateTime = LocalDateTime.now())
 
-class Receiver<T>(var received: Boolean = false) {
-    fun receive(n : T) {
+class Receiver<T>(var received: Boolean = false, var value: T? = null) {
+    fun receive(receivedValue: T) {
         received = true
+        value = receivedValue
     }
 }
 
-data class Always(val number: Int): Source {
+data class Always(val number: Int) : Source {
     override fun random(): Result<Problem, Int> {
         return Success(number)
     }
 }
 
-data class Sometimes(val threshold: Double, val number: Int, val random: Random? = ThreadLocalRandom.current() as Random?): Source {
-    val randomProblems = listOf<Problem>(Problem.Timeout, Problem.Overflow)
+data class Sometimes(
+    val threshold: Double,
+    val number: Int,
+    val random: Random? = ThreadLocalRandom.current()
+) : Source {
+    private val randomProblems = listOf(Problem.Timeout, Problem.Overflow)
 
     override fun random(): Result<Problem, Int> {
         return if (random != null) {
@@ -46,7 +53,7 @@ data class Sometimes(val threshold: Double, val number: Int, val random: Random?
             if (p < threshold) {
                 Success(number)
             } else {
-                val randomProblem = randomProblems.get(random.nextInt(randomProblems.size))
+                val randomProblem = randomProblems[random.nextInt(randomProblems.size)]
                 Failure(randomProblem)
             }
         } else {
@@ -55,7 +62,7 @@ data class Sometimes(val threshold: Double, val number: Int, val random: Random?
     }
 }
 
-class Example: StringSpec({
+class Example : StringSpec({
     "creation of a success" {
         Success<Problem, Int>(37)
     }
@@ -123,7 +130,7 @@ class Example: StringSpec({
     "map of a failure" {
         val result: Result<Problem, Int> = Failure(Problem.Timeout)
 
-        result.map {2 * it } shouldBe Failure(Problem.Timeout)
+        result.map { 2 * it } shouldBe Failure(Problem.Timeout)
     }
 
     "mapError of a success" {
@@ -144,7 +151,7 @@ class Example: StringSpec({
     "andThen of a success with a success" {
         val result: Result<Problem, Int> = Success(37)
 
-        result.andThen { n -> Success(n+1) } shouldBe Success(38)
+        result.andThen { n -> Success(n + 1) } shouldBe Success(38)
     }
 
     "andThen of a success with a failure" {
@@ -156,7 +163,7 @@ class Example: StringSpec({
     "andThen of a failure with a success" {
         val result: Result<Problem, Int> = Failure(Problem.Connection)
 
-        result.andThen { n -> Success(n+1) } shouldBe Failure(Problem.Connection)
+        result.andThen { n -> Success(n + 1) } shouldBe Failure(Problem.Connection)
     }
 
     "andThen of a failure with a failure" {
@@ -166,51 +173,63 @@ class Example: StringSpec({
     }
 
     "use of a success" {
-        val result: Result<Problem, Int> = Success(37)
-        val receiver = Receiver<Int>()
+        checkAll<Int> { n ->
+            val result: Result<Problem, Int> = Success(n)
+            val receiver = Receiver<Int>()
 
-        result.use(receiver::receive)
+            result.use(receiver::receive)
 
-        receiver.received shouldBe true
+            receiver.received shouldBe true
+            receiver.value shouldBe n
+        }
+
     }
 
     "use of a failure" {
-        val result: Result<Problem, Int> = Failure(Problem.Overflow)
-        val receiver = Receiver<Int>()
+        checkAll(problems) { problem ->
+            val result: Result<Problem, Int> = Failure(problem)
+            val receiver = Receiver<Int>()
 
-        result.use(receiver::receive)
+            result.use(receiver::receive)
 
-        receiver.received shouldBe false
+            receiver.received shouldBe false
+        }
     }
 
     "useError of a success" {
-        val result: Result<Problem, Int> = Success(37)
-        val receiver = Receiver<Problem>()
+        checkAll<Int> { n ->
+            val result: Result<Problem, Int> = Success(n)
+            val receiver = Receiver<Problem>()
 
-        result.useError(receiver::receive)
+            result.useError(receiver::receive)
 
-        receiver.received shouldBe false
+            receiver.received shouldBe false
+        }
     }
 
     "useError of a failure" {
-        val result: Result<Problem, Int> = Failure(Problem.Overflow)
-        val receiver = Receiver<Problem>()
+        checkAll(problems) { problem ->
+            val result: Result<Problem, Int> = Failure(problem)
+            val receiver = Receiver<Problem>()
 
-        result.useError(receiver::receive)
+            result.useError(receiver::receive)
 
-        receiver.received shouldBe true
+            receiver.received shouldBe true
+            receiver.value shouldBe problem
+        }
     }
 
     "complete" {
         forAll<Int, Int> { first, second ->
             val number = Always(first).random()
-                    .map { m -> 2*m }
-                    .andThen { m -> Sometimes(0.9, second).random().map { n -> Pair(m, n) } }
-                    .map { (m, n) -> m + n }
-                    .withDefault(0)
+                .map { m -> 2 * m }
+                .andThen { m -> Sometimes(0.9, second).random().map { n -> Pair(m, n) } }
+                .map { (m, n) -> m + n }
+                .withDefault(0)
 
-            number == 0 || number == 2*first + second
+            number == 0 || number == 2 * first + second
         }
     }
 })
 
+val problems = listOf(*Problem.values()).exhaustive()

@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
 
-class Map3Test: StringSpec({
+class Map3Test : StringSpec({
     "map3(success, success, success) is a success" {
         checkAll { l: Int, m: Int, r: Int ->
             val left: Result<String, Int> = Success(l)
@@ -102,4 +102,4 @@ class Map3Test: StringSpec({
 })
 
 fun add(l: Int, m: Int, r: Int): Int =
-        l + m + r
+    l + m + r

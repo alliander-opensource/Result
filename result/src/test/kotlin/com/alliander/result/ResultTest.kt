@@ -5,7 +5,7 @@ import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.*
 import io.kotest.property.checkAll
 
-class ResultTest: StringSpec({
+class ResultTest : StringSpec({
     "Success withDefault returns actual value" {
         checkAll { value: Int ->
             Success<Unit, Int>(value).withDefault(0) shouldBe value

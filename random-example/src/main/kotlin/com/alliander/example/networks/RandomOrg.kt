@@ -7,10 +7,10 @@ import java.net.http.*
 
 val defaultConfiguration = Configuration(100, 1, 100)
 
-data class RandomOrg(private val configuration: Configuration, private val parser: BodyParser, private val client: HttpClient): Network {
-    constructor(configuration: Configuration, client: HttpClient): this(configuration, BodyParser(), client)
-    constructor(parser: BodyParser, client: HttpClient): this(defaultConfiguration, parser, client)
-    constructor(client: HttpClient): this(defaultConfiguration, client)
+data class RandomOrg(private val configuration: Configuration, private val parser: BodyParser, private val client: HttpClient) : Network {
+    constructor(configuration: Configuration, client: HttpClient) : this(configuration, BodyParser(), client)
+    constructor(parser: BodyParser, client: HttpClient) : this(defaultConfiguration, parser, client)
+    constructor(client: HttpClient) : this(defaultConfiguration, client)
 
     override fun fetch(): Result<NetworkError, List<Int>> {
         val response = client.send(configuration.toRequest(), HttpResponse.BodyHandlers.ofString())
@@ -38,14 +38,16 @@ data class Configuration(val number: Int, val minimum: Int, val maximum: Int) {
 
 class BodyParser {
     fun parse(input: String): Result<NetworkError, List<Int>> {
-        if (input.isBlank()) {return Success(emptyList())}
+        if (input.isBlank()) {
+            return Success(emptyList())
+        }
         return try {
             input.trimEnd()
                     .split("\n")
                     .map(Integer::parseInt)
                     .toResult()
                     .mapError { NetworkError.Generic }
-        } catch(e: NumberFormatException) {
+        } catch (e: NumberFormatException) {
             Failure(NetworkError.NotAnInteger)
         }
     }

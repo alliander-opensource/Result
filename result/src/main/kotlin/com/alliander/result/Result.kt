@@ -233,7 +233,7 @@ data class Failure<Error, Value>(val error: Error) : Result<Error, Value>() {
  * @see [Result.andThen]
  */
 fun <E, U, V, W> map2(left: Result<E, U>, right: Result<E, V>, transform: (U, V) -> W): Result<E, W> {
-    return left.andThen { l -> right.map { r -> transform(l, r)}}
+    return left.andThen { l -> right.map { r -> transform(l, r) } }
 }
 
 /**
@@ -255,7 +255,12 @@ fun <E, U, V, W> map2(left: Result<E, U>, right: Result<E, V>, transform: (U, V)
  * [Failure] return that failure.
  * @see [map2]
  */
-fun <E, U, V, W, X> map3(left: Result<E, U>, middle: Result<E, V>, right: Result<E, W>, transform: (U, V, W) -> X): Result<E, X> {
+fun <E, U, V, W, X> map3(
+    left: Result<E, U>,
+    middle: Result<E, V>,
+    right: Result<E, W>,
+    transform: (U, V, W) -> X
+): Result<E, X> {
     return left.andThen { l ->
         map2(middle, right) { m, r -> transform(l, m, r) }
     }

@@ -38,7 +38,7 @@ class NetworkSourceTest : StringSpec({
 
     "when numbers are fetched, first number of batch is returned" {
         checkAll<Int> { number ->
-            every {network.fetch()}.returns(Success(listOf(number, ANY_NUMBER)))
+            every { network.fetch() }.returns(Success(listOf(number, ANY_NUMBER)))
             val source = NetworkSource(network, emptyList())
 
             source.integer() shouldBe Success(number)
@@ -55,7 +55,7 @@ class NetworkSourceTest : StringSpec({
 
     "when fetching numbers fails, failure is returned" {
         checkAll(networkErrors) { error ->
-            every {network.fetch()}.returns(Failure(error))
+            every { network.fetch() }.returns(Failure(error))
             val source = NetworkSource(network, emptyList())
 
             source.integer() shouldBe Failure(SourceError.Empty)
