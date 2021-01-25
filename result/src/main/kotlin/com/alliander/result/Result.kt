@@ -230,7 +230,7 @@ data class Failure<Error, Value>(val error: Error) : Result<Error, Value>() {
  * @param E the common error type of the results involved.
  * @return the result of applying `transform` to the success values of `left` and `right`. If `left` is a [Failure]
  * return that failure. Otherwise if `right` is a [Failure] return that failure.
- * @see [Map2Test.kt](https://github.com/alliander-opensource/Result/blob/master/result/src/test/kotlin/com/alliander/result/Map2Test.kt)
+ * @see [Result.andThen]
  */
 fun <E, U, V, W> map2(left: Result<E, U>, right: Result<E, V>, transform: (U, V) -> W): Result<E, W> {
     return left.andThen { l -> right.map { r -> transform(l, r)}}
@@ -253,7 +253,7 @@ fun <E, U, V, W> map2(left: Result<E, U>, right: Result<E, V>, transform: (U, V)
  * @return the result of applying `transform` to the success values of `left`, `middle` and `right`. If `left` is a
  * [Failure] return that failure. Otherwise if `middle` is a [Failure] return that failure. Otherwise if `right` is a
  * [Failure] return that failure.
- * @see [Map3Test.kt](https://github.com/alliander-opensource/Result/blob/master/result/src/test/kotlin/com/alliander/result/Map3Test.kt)
+ * @see [map2]
  */
 fun <E, U, V, W, X> map3(left: Result<E, U>, middle: Result<E, V>, right: Result<E, W>, transform: (U, V, W) -> X): Result<E, X> {
     return left.andThen { l ->
