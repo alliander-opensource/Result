@@ -99,6 +99,36 @@ class ResultTest: StringSpec({
             actual shouldBe Failure(Unit)
         }
     }
+
+    "Failure can be recovered" {
+        checkAll { value: Int ->
+            val result: Result<Int, Int> = Failure(value)
+
+            val actual = result.recover(::successfulIncrement)
+
+            actual shouldBe Success(value + 1)
+        }
+    }
+
+    "Success does not recover" {
+        checkAll { value: Int ->
+            val result: Result<Int, Int> = Success(value)
+
+            val actual = result.recover(::successfulIncrement)
+
+            actual shouldBe Success(value)
+        }
+    }
+
+    "Failure recovery can fail" {
+        checkAll { value: Int ->
+            val result: Result<Int, Int> = Failure(value)
+
+            val actual = result.recover { Failure(Unit) }
+
+            actual shouldBe Failure(Unit)
+        }
+    }
 })
 
 fun successfulIncrement(value: Int): Result<Unit, Int> {
