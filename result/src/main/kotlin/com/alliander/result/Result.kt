@@ -114,6 +114,22 @@ sealed class Result<Error, Value> {
     }
 
     /**
+     * Chain two computations together for error recovery.
+     *
+     * If a computation was a [Failure], `recover` can chain the error data into an error recovery computation.
+     * Otherwise keep the [Success].
+     *
+     * @param transform Provides the transformed error
+     * @return The transformed error of a [Failure]. Keeps the data otherwise.
+     */
+    fun <T> recover(transform: (Error) -> Result<T, Value>): Result<T, Value> {
+        return when (this) {
+            is Success -> Success(data)
+            is Failure -> transform(error)
+        }
+    }
+
+    /**
      * Transform a successful result.
      *
      * If a computation was a [Success], transform the data. Otherwise keep the [Failure].
