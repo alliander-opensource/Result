@@ -122,7 +122,7 @@ sealed class Result<Error, Value> {
      * @param transform Provides the transformed error
      * @return The transformed error of a [Failure]. Keeps the data otherwise.
      */
-    fun <T> recover(transform: (Error) -> Result<T, Value>): Result<T, Value> {
+    fun <T> andThenError(transform: (Error) -> Result<T, Value>): Result<T, Value> {
         return when (this) {
             is Success -> Success(data)
             is Failure -> transform(error)
