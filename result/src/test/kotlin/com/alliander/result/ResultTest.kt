@@ -104,7 +104,7 @@ class ResultTest: StringSpec({
         checkAll { value: Int ->
             val result: Result<Int, Int> = Failure(value)
 
-            val actual = result.recover(::successfulIncrement)
+            val actual = result.andThenError(::successfulIncrement)
 
             actual shouldBe Success(value + 1)
         }
@@ -114,7 +114,7 @@ class ResultTest: StringSpec({
         checkAll { value: Int ->
             val result: Result<Int, Int> = Success(value)
 
-            val actual = result.recover(::successfulIncrement)
+            val actual = result.andThenError(::successfulIncrement)
 
             actual shouldBe Success(value)
         }
@@ -124,7 +124,7 @@ class ResultTest: StringSpec({
         checkAll { value: Int ->
             val result: Result<Int, Int> = Failure(value)
 
-            val actual = result.recover { Failure(Unit) }
+            val actual = result.andThenError { Failure(Unit) }
 
             actual shouldBe Failure(Unit)
         }
