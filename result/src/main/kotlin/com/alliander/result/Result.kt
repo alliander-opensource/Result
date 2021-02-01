@@ -105,6 +105,9 @@ sealed class Result<Error, Value> {
      * ```kotlin
      * val record = repository.fetchByUsername('dvberkel').andThen(::sendNotification)
      * ```
+     *
+     * @param chain Provides the transformed error
+     * @return the transformed value of a [Success]. Keeps the error otherwise.
      */
     fun <T> andThen(chain: (Value) -> Result<Error, T>): Result<Error, T> {
         return when (this) {
@@ -119,13 +122,13 @@ sealed class Result<Error, Value> {
      * If a computation was a [Failure], `recover` can chain the error data into an error recovery computation.
      * Otherwise keep the [Success].
      *
-     * @param transform Provides the transformed error
+     * @param chain Provides the transformed error
      * @return The transformed error of a [Failure]. Keeps the data otherwise.
      */
-    fun <T> andThenError(transform: (Error) -> Result<T, Value>): Result<T, Value> {
+    fun <T> andThenError(chain: (Error) -> Result<T, Value>): Result<T, Value> {
         return when (this) {
             is Success -> Success(data)
-            is Failure -> transform(error)
+            is Failure -> chain(error)
         }
     }
 
