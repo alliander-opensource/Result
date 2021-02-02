@@ -37,7 +37,7 @@ What is the problem with `null`
 * Checked exception should be handled locally, but that often does not happen or is impossible
 * Unchecked exception do not have to be declared
 * Sometimes exceptions are not exceptional
-* Syntac is jarring
+* Syntax is jarring
 
 ---
 class: middle, center
@@ -58,7 +58,7 @@ class: middle, center
 
 ???
 
-Created to prevent
+Created to get help from the compiler and prevent
 
 * using null
 * checks
@@ -67,11 +67,123 @@ Created to prevent
 
 ---
 
+## API
+
+```kotlin
+sealed class Result<Error, Value>
+```
+
+???
+
+* **sealed class**; open class with known subclasses
+* **Error**; generic parameter of which mistakes
+* **Value**; generic parameter for computed values
+
+E.g.
+
+Fetching user from database
+* Value : user
+* Error : FetchError
+---
+
+### Creation
+
+```kotlin
+data class Success<Error, Value>(val data: Value)
+    : Result<Error, Value>() {
+```
+
+```kotlin
+data class Failure<Error, Value>(val error: Error)
+    : Result<Error, Value>() {
+```
+
+???
+
+How to create instances of `Result`?
+
+---
+
+### Chaining
+
+```kotlin
+fun <T> map(transform: (Value) -> T): Result<Error, T>
+```
+
+```kotlin
+fun <T> mapError(transform: (Error) -> T): Result<T, Value>
+```
+
+???
+
+Transform a result
+
+---
+
+### Chaining (Continued)
+
+```kotlin
+fun <T> andThen(chain: (Value) -> Result<Error, T>)
+    : Result<Error, T>
+```
+
+```kotlin
+fun <T> andThenError(chain: (Error) -> Result<T, Value>)
+    : Result<T, Value>
+```
+
+???
+
+Chain a computation
+
+Corresponds with `flatMap`
+
+---
+
+### Chaining (Continued)
+
+```kotlin
+fun use(actOn: (Value) -> Unit): Result<Error, Value>
+```
+
+```kotlin
+fun useError(actOn: (Error) -> Unit): Result<Error, Value>
+```
+
+???
+
+Use a result
+
+---
+
+### Unwrapping
+
+```kotlin
+fun withDefault(defaultValue: Value): Value
+```
+
+```kotlin
+fun withDefault(producer: (Error) -> Value): Value
+```
+
+```kotlin
+fun orThrowException(exceptionProducer: (Error) -> Exception): Value
+```
+
+???
+
+Je kunt de dans wel
+
+Lang ontspringen
+
+Tot het moment en dat is nu
+
+Dat je toch eens dansen moet
+
+---
+
 ## TODO
 
-* type of `Result`
-* how to inject values into `Result`
-* on result important methods
 * example
 
 ---
@@ -103,7 +215,7 @@ Created to prevent
 * `Result` is Λrrows `Either`
 * `Result` has a friendlier API
 * Avoids scary words lik monoid, functor and monad
-* `Result` is a gateway drug for Λ
+* `Result` is a gateway drug for Λ, or similar libraries
 
 ---
 class: middle, center
