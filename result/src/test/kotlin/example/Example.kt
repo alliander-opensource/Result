@@ -172,6 +172,30 @@ class Example : StringSpec({
         result.andThen { Failure<Problem, Int>(Problem.Timeout) } shouldBe Failure(Problem.Connection)
     }
 
+    "andThenError of a success with a success" {
+        val result: Result<Problem, Int> = Success(37)
+
+        result.andThenError { Success<Problem, Int>(51) } shouldBe Success(37)
+    }
+
+    "andThenError of a success with a failure" {
+        val result: Result<Problem, Int> = Success(37)
+
+        result.andThenError { Failure<Problem, Int>(Problem.Timeout) } shouldBe Success(37)
+    }
+
+    "andThenError of a failure with a success" {
+        val result: Result<Problem, Int> = Failure(Problem.Connection)
+
+        result.andThenError { Success<Problem, Int>(51) } shouldBe Success(51)
+    }
+
+    "andThenError of a failure with a failure" {
+        val result: Result<Problem, Int> = Failure(Problem.Connection)
+
+        result.andThenError { Failure<Problem, Int>(Problem.Timeout) } shouldBe Failure(Problem.Timeout)
+    }
+
     "use of a success" {
         checkAll<Int> { n ->
             val result: Result<Problem, Int> = Success(n)
@@ -182,7 +206,6 @@ class Example : StringSpec({
             receiver.received shouldBe true
             receiver.value shouldBe n
         }
-
     }
 
     "use of a failure" {
