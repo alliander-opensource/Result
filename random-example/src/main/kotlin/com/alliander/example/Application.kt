@@ -1,18 +1,18 @@
 package com.alliander.example
 
+import com.alliander.example.dice.Dice
+import com.alliander.example.dice.toDice
 import com.alliander.example.networks.RandomOrg
 import com.alliander.example.sources.NetworkSource
 import com.alliander.result.map2
 import java.net.http.HttpClient
 
 fun main(args: Array<String>) {
-    val client = HttpClient.newHttpClient()
-    val source = NetworkSource(RandomOrg(client))
+    val input = args[0]
+    val roll = input
+        .toDice()
+        .andThen(Dice::roll)
+        .withDefault(0)
 
-    val first = source.integer()
-    val second = source.integer()
-
-    val sum = map2(first, second) { l, r -> l + r }
-
-    println("$first + $second = $sum")
+    println("$input threw $roll")
 }
