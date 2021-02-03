@@ -34,21 +34,21 @@ data class Dice(val source: Source, val number: Int, val faces: Int) {
         return List(number) { single() }
             .fold(Success(emptyList()), ::combine)
             .map { xs -> xs.sum() }
-            .mapError { error -> error as DiceError }
     }
 
-    private fun single(): Result<RandomSourceError, Int> {
+    private fun single(): Result<DiceError, Int> {
         return source.integer()
             .mapError(::RandomSourceError)
+            .mapError { error -> error as DiceError }
             .map { n -> n.modulo(faces) }
             .map { n -> n + 1 }
     }
 }
 
 fun combine(
-    accumulator: Result<RandomSourceError, List<Int>>,
-    element: Result<RandomSourceError, Int>
-): Result<RandomSourceError, List<Int>> {
+    accumulator: Result<DiceError, List<Int>>,
+    element: Result<DiceError, Int>
+): Result<DiceError, List<Int>> {
     return accumulator.andThen { xs ->
         element.map { x -> xs + x }
     }

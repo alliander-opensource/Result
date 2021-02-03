@@ -8,7 +8,6 @@ fun main(args: Array<String>) {
     val roll = input
         .toDice()
         .andThen(Dice::roll)
-        .withDefault(0)
-
-    println("$input threw $roll")
+        .use { pips -> println("$input threw $pips")}
+        .useError { error -> println("could not roll dice: $error")}
 }

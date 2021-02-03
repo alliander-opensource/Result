@@ -28,16 +28,25 @@ What is the problem with `null`
 
 ---
 
-## Exceptions
-
-> Exceptions are controversial
+```java
+Id userId = Id(37);
+User user = repository.getBy(userId);
+```
 
 ???
 
-* Checked exception should be handled locally, but that often does not happen or is impossible
-* Unchecked exception do not have to be declared
-* Sometimes exceptions are not exceptional
-* Syntax is jarring
+Let's notify a user.
+
+Can you now use user to send a notification?
+
+No! It could be null.
+
+But what does that mean?
+
+* Could the connection to the database not be established
+* Is the table is present?
+* Is the user unknown?
+* Bug?
 
 ---
 class: middle, center
@@ -182,16 +191,103 @@ Dat je toch eens dansen moet
 
 ---
 
-## TODO
+## Throwing dice
 
-* example
+*Dice notation*
+
+> a system to represent different combinations of dice in wargames and tabletop role-playing games using simple algebra-like notation such as 2d6+12.
+
+???
+
+We will restrict ourselves to `<m>d<n>`.
+
+---
+
+```kotlin
+"3d6"
+    .toDice()
+    .andThen(Dice::roll)
+    .use { pips -> println("$input threw $pips")}
+    .useError { error -> println("could not roll dice: $error")}
+```
+
+---
+
+```kotlin
+fun String.toDice(): Result<DiceError, Dice> {
+    val matcher = dicePattern.matcher(this)
+    return if (matcher.matches()) {
+        val number = matcher.group(1).toInt()
+        val faces = matcher.group(2).toInt()
+        return Success(Dice(number, faces))
+    } else {
+        Failure(ParseError(this))
+    }
+}
+private val dicePattern: Pattern =
+    Pattern.compile("^([1-9]\\d*)d([1-9]\\d*)$")
+```
+
+---
+
+```kotlin
+    private fun single(): Result<DiceError, Int> {
+        return source.integer()
+            .mapError(::RandomSourceError)
+            .map { n -> n.modulo(faces) }
+            .map { n -> n + 1 }
+    }
+```
+
+---
+
+```kotlin
+    fun roll(): Result<DiceError, Int> {
+        return List(number) { single() }
+            .fold(Success(emptyList()), ::combine)
+            .map { xs -> xs.sum() }
+    }
+```
+
+--
+
+```kotlin
+List<Result<DiceError, Int>> -> Result<DiceError, List<Int>>
+```
+
+---
+
+```kotline
+fun combine(
+    accumulator: Result<DiceError, List<Int>>,
+    element: Result<DiceError, Int>
+): Result<DiceError, List<Int>> {
+    return accumulator.andThen { xs ->
+        element.map { x -> xs + x }
+    }
+}
+```
 
 ---
 
 ## What about?
 
+* Exceptions
 * `Kotlin.Result`
 * Λrrow
+
+---
+
+## Exceptions
+
+> Exceptions are controversial
+
+???
+
+* Checked exception should be handled locally, but that often does not happen or is impossible
+* Unchecked exception do not have to be declared
+* Sometimes exceptions are not exceptional
+* Syntax is jarring
 
 ---
 
@@ -221,3 +317,7 @@ Dat je toch eens dansen moet
 class: middle, center
 
 ## Questions
+
+???
+
+* Do you look at the types?
