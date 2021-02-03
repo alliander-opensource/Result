@@ -10,8 +10,6 @@
 rootProject.name = "Result"
 include("result", "random-example")
 
-enableFeaturePreview("GRADLE_METADATA")
-
 pluginManagement {
     repositories {
         gradlePluginPortal()
