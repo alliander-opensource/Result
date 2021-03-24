@@ -20,7 +20,7 @@ plugins {
 }
 
 group = "com.alliander"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     // Use JCenter for resolving dependencies.
