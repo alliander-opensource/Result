@@ -1,6 +1,9 @@
 # Result 
 A [Kotlin][kotlin] library that is explicit about success and failure.
 
+### not under active development
+The team in which the `Result` library originated has moved on to use the excellent [Arrow library][arrow]. Therefore `Result` is not under active development anymore. It still can serve as an example how to create, structure and foster an open source library.
+
 ## Rationale
 Kotlin is explicit about which values can be `null`. This [null-safety][kotlin:docs:null-safety] is achieved via 
 nullable and non-nullable types. The distinction is made for type `T` with a question mark: `T?` means that values
@@ -48,6 +51,7 @@ This project uses [Gradle][gradle] as a build tool. To see which tasks are avail
 ```
 
 [kotlin]: https://kotlinlang.org/
+[arrow]: https://arrow-kt.io/
 [kotlin:docs:null-safety]: https://kotlinlang.org/docs/reference/null-safety.html
 [kotlin:docs:safe-calls]: https://kotlinlang.org/docs/reference/null-safety.html#safe-calls
 [kotlin:docs:Result]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-result/
